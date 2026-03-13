@@ -1,44 +1,47 @@
 # Market Basket Analysis on Amazon 'All Beauty' Dataset
 
 ## 📌 Project Overview
-[cite_start]In today's competitive e-commerce landscape, understanding customer purchasing behavior is vital for increasing sales and customer satisfaction[cite: 511]. [cite_start]This project applies **Market Basket Analysis (MBA)** using the **Apriori Algorithm** to uncover hidden patterns in beauty and personal care product reviews[cite: 512]. 
+In the competitive e-commerce landscape, understanding customer purchasing behavior is vital for driving sales. This project applies **Market Basket Analysis (MBA)** using the **Apriori Algorithm** to uncover hidden patterns in beauty and personal care product reviews. 
 
-The primary goal was to identify meaningful product associations to drive data-driven strategies such as:
-* [cite_start]**Cross-selling:** Recommending complementary products[cite: 513].
-* [cite_start]**Product Bundling:** Creating value packs of frequently bought items[cite: 513].
-* [cite_start]**Personalized Recommendations:** Enhancing the customer journey with relevant suggestions[cite: 513].
+The goal was to identify meaningful product associations to drive data-driven strategies such as:
+* **Cross-selling:** Recommending complementary products based on user history.
+* **Product Bundling:** Identifying high-affinity items for value packs.
+* **Inventory Management:** Understanding which products drive the purchase of others.
 
 ## 📊 Dataset
-[cite_start]The project utilizes the **Amazon All Beauty 5-core dataset** from UCSD, featuring verified customer reviews and detailed metadata[cite: 523, 524].
-* [cite_start]**Total Validated Reviews:** 5,269[cite: 530].
-* [cite_start]**Categories covered:** Shampoo, lotions, soaps, and cosmetics[cite: 530].
-* [cite_start]**Structure:** Data was reorganized into "baskets," where each basket contains all products reviewed by a unique user[cite: 531, 532].
+The project utilizes the **Amazon All Beauty 5-core dataset**, featuring verified customer reviews and metadata.
+* **Data Sources:** Combined `All_Beauty_5.json.gz` (reviews) and `meta_All_Beauty.json.gz` (product details).
+* **Final Scope:** Focused on products with a minimum frequency to ensure statistical significance.
+* **Structure:** Data was transformed into a transactional "basket" format where each row represents a unique user's collection of reviewed products.
 
+## 🛠️ Data Preprocessing
+To prepare the raw JSON data for the Apriori algorithm, the following steps were implemented:
+1. **Cleaning:** Removed irrelevant columns (images, votes) and handled missing values.
+2. **Integration:** Merged review data with metadata on the `asin` (Amazon Standard Identification Number) to display actual product titles.
+3. **Reduction:** Filtered out infrequent items to focus on meaningful transaction patterns.
+4. **Encoding:** Used `TransactionEncoder` to convert the categorical list of products into a one-hot encoded boolean matrix.
 
-## 🛠️ Data Preprocessing & Methodology
-To prepare the raw JSON data for the Apriori algorithm, several steps were taken:
-1. [cite_start]**Cleaning:** Handled missing values and ignored non-essential fields like images and votes[cite: 546, 548].
-2. [cite_start]**Integration:** Merged review data with metadata on the `asin` field to include full product titles[cite: 612].
-3. [cite_start]**Reduction:** Applied a frequency threshold to focus on products with at least 2 reviews to reduce noise[cite: 669].
-4. [cite_start]**Encoding:** Utilized `TransactionEncoder` from the `mlxtend` library to convert baskets into a binary matrix format[cite: 680, 681].
+## 🚀 Key Insights & Association Rules
+Using a **Minimum Support of 0.01 (1%)** and **Confidence threshold of 0.6 (60%)**, the following strong associations were discovered:
 
-## 🚀 Implementation & Insights
-[cite_start]The **Apriori Algorithm** was implemented with a minimum support of 1% and a confidence threshold of 60% to ensure results were statistically significant and actionable[cite: 693, 721].
+| Antecedent (Product A) | Consequent (Product B) | Confidence | Lift | Strategy |
+| :--- | :--- | :--- | :--- | :--- |
+| **Colgate Strawberry Toothpaste** | **Colgate Kids Cavity Protection** | 0.86 | 76.2 | Family Oral Care Bundle |
+| **Lavender Bath Gel** | **Lavender Soap Bar** | 0.80 | 30.3 | Relaxing Spa Gift Set |
+| **Lectric Shave (3 oz)** | **Lectric Shave (7 oz)** | 0.65 | 58.3 | Subscription Upsell (Trial to Full) |
 
-### Key Findings & Actionable Strategies
-* [cite_start]**Rule 1 (Oral Care):** Customers who reviewed *Colgate Strawberry Toothpaste* almost always reviewed *Colgate Kids Cavity Protection* (**Lift: 76.2**)[cite: 761]. 
-    * [cite_start]*Strategy:* Market these together as a "Family Oral Care Pack"[cite: 442].
-* [cite_start]**Rule 2 (Self-Care Bundles):** A strong association was found between *Pre De Provence Lavender Bath Gel* and *Lavender Soap Bar* (**Lift: 30.3**)[cite: 764].
-    * [cite_start]*Strategy:* Create theme-based "Lavender Self-Care Bundles" for spa-at-home marketing[cite: 450].
-* [cite_start]**Rule 3 (Trial-to-Full Size):** Users of the 3oz *Lectric Shave* often transition to the 7oz version (**Lift: 58.29**)[cite: 745, 746].
-    * [cite_start]*Strategy:* Launch upsell campaigns targeting trial-size buyers with full-size discounts[cite: 447].
+### Analysis of Metrics:
+* **Support:** Indicates how frequently the itemset appears in the dataset.
+* **Confidence:** The probability that Product B is purchased when Product A is purchased.
+* **Lift:** A lift score significantly higher than 1 (e.g., 76.2) proves a very strong relationship between products beyond random chance.
 
+## 🖥️ Interactive Recommendation System
+I developed a search function within the notebook that allows users to input a product keyword and receive real-time recommendations.
+* **Input:** Keyword (e.g., "Lavender").
+* **Output:** Top 5 associated products ranked by **Lift** and **Confidence**.
 
-## 🖥️ Interactive Recommendation Dashboard
-[cite_start]A highlight of this project is a **product-specific recommendation system**[cite: 455]. [cite_start]Users can input a keyword (e.g., "Oil" or "Shampoo"), and the system identifies the top 5 strongest associations based on lift, providing real-time "Frequently Bought Together" prompts[cite: 456, 458].
-
-## 🛠️ Tools Used
-* **Python** (Pandas, NumPy)
-* **MLxtend** (Apriori & Association Rules)
-* **NetworkX** (For relationship visualization)
-* **Matplotlib & Seaborn** (For data visualization)
+## 🛠️ Tech Stack
+* **Language:** Python
+* **Data Handling:** Pandas, NumPy
+* **Machine Learning:** MLxtend (Apriori & Association Rules)
+* **Visualization:** Matplotlib, Seaborn
